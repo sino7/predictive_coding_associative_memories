@@ -8,7 +8,7 @@ import json
 import torch.utils.data as data
 from PIL import Image
 import torch
-    import torchvision
+import torchvision
 import torchvision.transforms as transforms
 import torchvision.transforms.functional as TF
 
