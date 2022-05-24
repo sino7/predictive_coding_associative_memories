@@ -6,6 +6,13 @@ In this notebook, we provide the code to reproduce our experiments on the MNIST,
 ! download_monet_model.sh
 ```
 
+If you wish to use the CLEVR dataset, you can download it with this cell. Note that this can take a long time.
+
+
+```python
+! download_clevr.sh
+```
+
 
 ```python
 import torch
@@ -329,7 +336,7 @@ plt.show()
 
 
     
-![png](experiments_files/experiments_14_0.png)
+![png](experiments_files/experiments_16_0.png)
     
 
 

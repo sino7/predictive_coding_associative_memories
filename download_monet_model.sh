@@ -1,5 +1,8 @@
+MODEL_DIR=saved_models
 ATTN_MODEL_FILE=saved_models/latest_net_Attn.pth
 CVAE_MODEL_FILE=saved_models/latest_net_CVAE.pth
+
+mkdir $MODEL_DIR
 
 g_download() {
 	gURL="$1"
