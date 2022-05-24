@@ -292,10 +292,10 @@ print("Retrieval rate : " + str(retrieval_rate))
 
 
 ```python
-fig = plt.figure(figsize=(4*3, 3*batch_size))
-axes = fig.subplots(batch_size, 4)
+fig = plt.figure(figsize=(4*3, 3*5))
+axes = fig.subplots(5, 4)
 
-x_stored = vae_net.decode(M[:batch_size]).detach()
+x_stored = vae_net.decode(M).detach()
 x_pred = vae_net.decode(z).detach()
 
 if dataset_name=='CLEVR':
@@ -304,7 +304,7 @@ if dataset_name=='CLEVR':
     xt = renormalize(xt)
     x_pred = renormalize(x_pred)
     
-for k in range(batch_size):
+for k in range(5):
     
     axes[k, 0].set_axis_off()
     axes[k, 0].imshow(xc[k].cpu().reshape(*item_shape).transpose(0, 1).transpose(1, 2), vmin=0, vmax=1)
