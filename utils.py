@@ -44,7 +44,7 @@ def color_rotation(image_batch):
     result[:, 1] = image_batch[:, 2]
     result[:, 2] = image_batch[:, 0]
     
-    return image_batch
+    return result
 
 def renormalize(img):
     
