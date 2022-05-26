@@ -427,7 +427,7 @@ class MemN2N(nn.Module):
         
         self.M = M
         
-    def forward(self, x, z, alpha=None, return_all=False):
+    def forward(self, x, z, alpha=1.0, return_all=False):
         
         beta = alpha if alpha is not None else self.beta
         
@@ -471,6 +471,14 @@ class NTM(nn.Module):
                 
         self.out_k = nn.Linear(mem_dim, mem_dim * read_heads, bias=False)
         self.out_g = nn.Linear(mem_dim, read_heads, bias=True)
+        
+        self.init_weights()
+        
+    def init_weights(self):
+        
+        self.out_k.weight.data = torch.eye(self.mem_dim)
+        self.out_g.weight.data = torch.zeros(self.mem_dim, self.mem_dim)
+        self.out_g.bias.data = torch.Tensor([0.0])
         
     def set_mem(self, M):
         
@@ -634,11 +642,14 @@ class GMMStar(nn.Module):
     An implementation of the GMM model 
     """
     
-    def __init__(self, mem_dim):
+    def __init__(self, mem_dim, diag=False):
         
         super(GMMStar, self).__init__()
         self.mem_dim = mem_dim
-        self.precision = torch.nn.Parameter(torch.eye(self.mem_dim))
+        if diag:
+            self.precision = torch.nn.Parameter(torch.zeros(self.mem_dim))
+        else:
+            self.precision = torch.nn.Parameter(torch.eye(self.mem_dim))
         
     def set_mem(self, means):
         
@@ -648,6 +659,12 @@ class GMMStar(nn.Module):
         
         batch_size, N, _ = self.means.shape
         
+        # Precision
+        if len(self.precision.shape)==1:
+            precision = torch.diag(torch.exp(self.precision)).unsqueeze(0).repeat(N*batch_size, 1, 1)
+        else:
+            precision = self.precision.unsqueeze(0).repeat(N*batch_size, 1, 1)
+                    
         # Reshape
         means = self.means.reshape(batch_size*N, self.mem_dim, 1)
 
@@ -655,9 +672,6 @@ class GMMStar(nn.Module):
             
             # Reshape
             z = z.unsqueeze(1).repeat(1, N, 1).reshape(batch_size*N, self.mem_dim, 1)
-
-            # Precision
-            precision = self.precision.unsqueeze(0).repeat(N*batch_size, 1, 1)
             
             # Attention coefficients
             weights = torch.softmax(
