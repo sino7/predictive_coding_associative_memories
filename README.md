@@ -175,7 +175,11 @@ if model.training>0:
         # Hyperparameters
         iterations = model.training_hp['iterations']
         batch_size = model.training_hp['batch_size']
-        lr = model.training_hp['lr']
+        if type(model.training_hp['lr']) is dict:
+            hp_tag = dataset_name + '_' + str(representation)
+            lr = model.training_hp['lr'][hp_tag]
+        else:
+            lr = model.training_hp['lr']
 
         # Training set dataloader
         trainloader = torch.utils.data.DataLoader(dataset(isTrain=True), batch_size=N)
@@ -280,7 +284,8 @@ for x in tqdm(testloader):
     
     # Percentage of properly retrieved patterns, the threshold value is arbitrary, but we found
     # that it provides a good discrimination between succesful and failed memory retrievals
-    percs.append(100*torch.sum(dists < 1)/dists.shape[0])
+    thresh = 5 if representation else 2
+    percs.append(100*torch.sum(dists < thresh)/dists.shape[0])
 
 ```
 
@@ -294,7 +299,7 @@ retrieval_rate = torch.mean(torch.Tensor(percs)).item()
 print("Retrieval rate : " + str(retrieval_rate))
 ```
 
-    Retrieval rate : 55.55555725097656
+    Retrieval rate : 58.88888931274414
     
 
 
@@ -302,8 +307,12 @@ print("Retrieval rate : " + str(retrieval_rate))
 fig = plt.figure(figsize=(4*3, 3*5))
 axes = fig.subplots(5, 4)
 
-x_stored = vae_net.decode(M).detach()
-x_pred = vae_net.decode(z).detach()
+if representation:
+    x_stored = vae_net.decode(M).detach()
+    x_pred = vae_net.decode(z).detach()
+else:
+    x_stored = M.detach()
+    x_pred = z.detach()
 
 if dataset_name=='CLEVR':
     xc = renormalize(xc)

@@ -53,7 +53,12 @@ model_options = {
         MemN2N, training=1, 
         init_p={}, 
         training_p={}, 
-        training_hp={'iterations':20, 'lr':0.0001, 'batch_size':100}, 
+        training_hp={'iterations':20, 'lr':{
+            'CLEVR_True':1e-2,
+            'CLEVR_False':1e-7,
+            'CIFAR10_True':1e-4,
+            'CIFAR10_False':2e-5
+        }, 'batch_size':100}, 
         eval_p={'alpha':100}
     ),
     'NTM': ModelOptions(
@@ -61,7 +66,12 @@ model_options = {
         training=1, 
         init_p={}, 
         training_p={}, 
-        training_hp={'iterations':20, 'lr':0.0001, 'batch_size':100}, 
+        training_hp={'iterations':20, 'lr':{
+            'CLEVR_True':1e-3,
+            'CLEVR_False':1e-6,
+            'CIFAR10_True':1e-3,
+            'CIFAR10_False':1e-6
+        }, 'batch_size':100}, 
         eval_p={}
     ),
     'GMM': ModelOptions(GMM, init_p={}, training_p={}, training_hp={}, eval_p={'sigma':0.1}),
@@ -78,7 +88,12 @@ model_options = {
         training=2, 
         init_p={}, 
         training_p={}, 
-        training_hp={'iterations':20, 'lr':0.0001, 'batch_size':100}, 
+        training_hp={'iterations':20, 'lr':{
+            'CLEVR_True':1e-2,
+            'CLEVR_False':1e-7,
+            'CIFAR10_True':1e-4,
+            'CIFAR10_False':2e-5
+        }, 'batch_size':100}, 
         eval_p={'alpha':100}
     ),
     'NTM_star': ModelOptions(
@@ -86,13 +101,18 @@ model_options = {
         training=2, 
         init_p={}, 
         training_p={}, 
-        training_hp={'iterations':20, 'lr':0.01, 'batch_size':100}, 
+        training_hp={'iterations':20, 'lr':{
+            'CLEVR_True':1e-3,
+            'CLEVR_False':1e-6,
+            'CIFAR10_True':1e-3,
+            'CIFAR10_False':1e-6
+        }, 'batch_size':100}, 
         eval_p={}
     ),
     'GMM_star': ModelOptions(
         GMMStar, 
         training=2, 
-        init_p={}, 
+        init_p={'diag':True}, 
         training_p={'iterations':1}, 
         training_hp={'iterations':20, 'lr':0.01, 'batch_size':100}, 
         eval_p={}
